@@ -1,0 +1,80 @@
+{
+    "name": "nightswitch",
+    "displayName": "NightSwitch",
+    "description": "Switches between day and night theme at time specified by the user, or based on the user location.",
+    "version": "0.0.1",
+    "publisher": "gharveymn",
+    "engines": {
+        "vscode": "^1.11.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:extension.sayHello"
+    ],
+    "main": "./out/src/extension",
+    "contributes": {
+        "commands": [{
+            "command": "extension.sayHello",
+            "title": "Hello World"
+        }]
+    },
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0",
+        "mocha": "^2.3.3",
+        "@types/node": "^6.0.40",
+        "@types/mocha": "^2.2.32"
+    },
+    "configuration": {
+        "title": "NightSwitch",
+        "properties": {
+            "nightswitch.dayTheme": {
+                "type": "string",
+                "default": "Default Light+",
+                "description": "Specifies which theme is to be shown during the day."
+            },
+            "nightswitch.nightTheme": {
+                "type": "string",
+                "default": "Default Dark+",
+                "description": "Specifies which theme is to be shown during the night."
+            },
+            "nightswitch.switchTimeAM": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "default": null,
+                "description": "Manually specifies the time of switch in the morning."
+            },
+            "nightswitch.switchTimePM": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "default": null,
+                "description": "Manually specifies the time of switch in the evening."
+            },
+            "nightswitch.location": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "default": null,
+                "description": "Specifies the user location in decimal degrees. Example input: \"49.89,-97.14\"."
+            },
+            "nightswitch.useGeoLocation": {
+                "type": "boolean",
+                "default": false,
+                "description": "Not implemented yet. By setting this to true you give the extension access to your current location. In any case, no data is transferred to or from this extension."
+            }
+        }
+    }
+}
