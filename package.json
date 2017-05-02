@@ -4,6 +4,16 @@
     "description": "Switches between day and night theme at time specified by the user, or based on the user location.",
     "version": "0.0.1",
     "publisher": "gharveymn",
+    "icon": "icon/icon.ico",
+    "galleryBanner": {
+        "color": "#5c2d91",
+        "theme": "dark"
+    },
+    "license": "BSD2, SEE LICENSE",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gharveymn/nightswitch"
+    },
     "engines": {
         "vscode": "^1.11.0"
     },
@@ -11,13 +21,13 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onCommand:extension.toggleTheme"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
-            "command": "extension.sayHello",
-            "title": "Hello World"
+            "command": "extension.toggleTheme",
+            "title": "Toggle Day/Night"
         }]
     },
     "scripts": {
