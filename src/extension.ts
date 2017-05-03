@@ -13,7 +13,6 @@ export function activate(context: vscode.ExtensionContext) {
 	let switchDay = makeSwitchDay();
 	let switchNight = makeSwitchNight();
 
-	//var time = new Date()
 	var time = new Date()
 	var SunCalc = require('suncalc')
 
@@ -38,10 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const forceSwitch = nsconfig.get<boolean>('forceSwitch')
 
 
-	if (nsconfig.get('useGeoLocation')) {
-		useGeo(SunCalc, manualTimes, forceSwitch)
-	}
-	else if (nsconfig.get('location') != null) {
+	if (nsconfig.get('location') != null) {
 		console.log('NS: running location');
 		const coords = parseCoordinates(nsconfig.get<string>('location'))
 		if(Number.isNaN(coords[0]) || Number.isNaN(coords[1]))
@@ -52,6 +48,9 @@ export function activate(context: vscode.ExtensionContext) {
 			console.log('NS: (' + coords[0] + ',' + coords[1] + ')');
 			locationSwitch(coords, time, SunCalc, manualTimes, forceSwitch)
 		}
+	}
+	else if (nsconfig.get('useGeoLocation')) {
+		useGeo(SunCalc, manualTimes, forceSwitch)
 	}
 	console.info('NS: NightSwitch is now active!');
 }
@@ -81,6 +80,7 @@ function useGeo(SunCalc: any, manualTimes: number[], forceSwitch: boolean) {
 			const geoip = require('geoip-lite');
 			const geoCoords = geoip.lookup(ip).ll;
 			console.log('NS: geoCoords: (' + geoCoords[0] + ',' + geoCoords[1] + ')');
+			nsconfig.update('location', '(' + geoCoords[0] + ',' + geoCoords[1] + ')', true)
 			locationSwitch(geoCoords, new Date(), SunCalc, manualTimes, forceSwitch)
 		});
 }

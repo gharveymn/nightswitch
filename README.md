@@ -51,6 +51,12 @@ This extension is also way too big right now because of the geoip feature. This 
 
 ## [CHANGELOG](https://github.com/gharveymn/nightswitch/blob/master/CHANGELOG.md)
 
+### 0.1.1
+Corrects version number
+
+### 0.1.0
+Gives priority to location. If using geolocation updates location to decrease workload.
+
 ### 0.0.3
 Creates changelog and updates docs 
 
