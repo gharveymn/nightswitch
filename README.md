@@ -34,6 +34,8 @@ None. Probably safer to set your main theme to either the day or night theme fro
 
 May have some synchronization issues. Haven't removed console logs yet, but the user won't see these.
 
+This extension is also way too big right now because of the geoip feature. This is sort of on my todo list, but if someone wants to do that for me I would be soooooooo happy.
+
 ## Release Notes
 
 Allows for GPS coordinate location, geolocation, manual input.
