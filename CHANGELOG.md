@@ -1,7 +1,10 @@
-# Change Log
-All notable changes to the "nightswitch" extension will be documented in this file.
+# Changelog
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### 0.0.3
+Creates changelog and updates docs 
 
-## [Unreleased]
-- Initial release
+### 0.0.2
+Changes to documentation, fixes a couple of bugs with commands
+
+### 0.0.1
+Initial release. Still probably pretty buggy (I wrote this pretty hastily).
