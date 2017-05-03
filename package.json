@@ -33,6 +33,14 @@
 			{
 				"command": "extension.toggleTheme",
 				"title": "Toggle Day/Night"
+			},
+			{
+				"command": "extension.switchDay",
+				"title": "Switch to Day Theme"
+			},
+			{
+				"command": "extension.switchNight",
+				"title": "Switch to Night Theme"
 			}
 		],
 		"configuration": {

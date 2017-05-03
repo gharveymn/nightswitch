@@ -10,6 +10,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	reload()
 	let toggle = makeToggle();
+	let switchDay = makeSwitchDay();
+	let switchNight = makeSwitchNight();
 
 	//var time = new Date()
 	var time = new Date()
@@ -179,6 +181,20 @@ function makeToggle() {
 		else {
 			vscode.window.showInformationMessage('Your current theme is not set to either your day or night theme. Please update your settings.');
 		}
+	});
+}
+
+
+function makeSwitchDay() {
+	return vscode.commands.registerCommand('extension.switchDay', () => {
+		setThemeDay()
+	});
+}
+
+
+function makeSwitchNight() {
+	return vscode.commands.registerCommand('extension.switchNight', () => {
+		setThemeNight()
 	});
 }
 

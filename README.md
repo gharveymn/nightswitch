@@ -14,11 +14,25 @@ None. Probably safer to set your main theme to either the day or night theme fro
 
 ## Extension Settings
 
-I'll do this in a bit... just look at package.json or your settings file for docs:
+
+- `"nightswitch.dayTheme"` 
+	- sets the theme to be shown during the day (eg. "Solarized Light")
+- `"nightswitch.nightTheme"` 
+	- sets the theme to be shown at night (eg. "Default Dark+")
+- `"nightswitch.location"`
+	- specifies a user defined GPS location in decimal degrees (eg. \"(49.89,-97.14)\")
+- `"nightswitch.useGeoLocation"`
+	- specifies whether to infer user location based on IP address (default false)
+- `"nightswitch.sunrise"`
+	- manually sets the time to switch theme to day
+- `"nightswitch.sunset"`
+	- manually sets the time to switch theme to night
+- `"nightswitch.forceSwitch"`
+	- forces the theme to switch to currently canonical theme, ie. if it is day and you have your theme set to something other than dayTheme, resets the theme to dayTheme.
 
 ## Known Issues
 
-May have some synchronization issues. Haven't removed console logs yet.
+May have some synchronization issues. Haven't removed console logs yet, but the user won't see these.
 
 ## Release Notes
 
