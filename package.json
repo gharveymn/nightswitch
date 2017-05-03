@@ -3,7 +3,7 @@
 	"displayName": "NightSwitch",
 	"description": "Switches between day and night theme at time specified by the user, or based on the user location.",
 	"version": "0.0.1",
-	"publisher": "Gene Harvey",
+	"publisher": "gharveymn",
 	"icon": "icon/icon.ico",
 	"galleryBanner": {
 		"color": "#5c2d91",
