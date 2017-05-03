@@ -8,9 +8,6 @@ var wbconfig = vscode.workspace.getConfiguration('workbench')
 // get the user config for nightswitch
 var nsconfig = vscode.workspace.getConfiguration('nightswitch')
 
-const TESTStartingCurrTime = (new Date()).getTime()
-const TESTStartingTime =	1493776153933
-
 export function activate(context: vscode.ExtensionContext) {
 
 	// // get the current workbench configuration
