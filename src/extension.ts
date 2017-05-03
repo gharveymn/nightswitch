@@ -3,42 +3,128 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+// get the current workbench configuration
+var wbconfig = vscode.workspace.getConfiguration('workbench')
+// get the user config for nightswitch
+var nsconfig = vscode.workspace.getConfiguration('nightswitch')
+
+const TESTStartingCurrTime = (new Date()).getTime()
+const TESTStartingTime =	1493776153933
+
 export function activate(context: vscode.ExtensionContext) {
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "nightswitch" is now active!');
+	// // get the current workbench configuration
+	// var wbconfig = vscode.workspace.getConfiguration('workbench');
+	// // get the user config for nightswitch
+	// var nsconfig = vscode.workspace.getConfiguration('nightswitch');
+	var toggle = makeToggle();
 
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.toggleTheme', () => {
-        // The code you place here will be executed every time your command is executed
+	//var time = new Date()
+	var time = new Date()
+	var SunCalc = require('suncalc')
 
-        var wbConfig = vscode.workspace.getConfiguration('workbench');
-        var nsConfig = vscode.workspace.getConfiguration('nightswitch');
-
-        var currentTheme = wbConfig.get<string>('colorTheme');
-        var dayTheme = nsConfig.get<string>('dayTheme')
-        var nightTheme = nsConfig.get<string>('nightTheme')
-
-        if(currentTheme === dayTheme)
-        {
-            wbConfig.update('colorTheme',nightTheme,true);
-        }
-        else
-        {
-            wbConfig.update('colorTheme',dayTheme,true);
-        }
-
-        // Display a message box to the user
-        //vscode.window.showInformationMessage(currentTheme);
-    });
-
-    context.subscriptions.push(disposable);
+	if (nsconfig.get('geolocation')) {
+		//Nothing for now...
+	}
+	else if (nsconfig.get('location') != null) {
+		console.log('NS: running location');
+		const coords = parseCoordinates(nsconfig.get<string>('location'))
+		console.log('(' + coords[0] + ',' + coords[1] + ')');
+		locationSwitch(coords, time, SunCalc)
+	}
+	console.info('NS: NightSwitch is now active!');
 }
+
+
+function makeToggle() {
+	return vscode.commands.registerCommand('extension.toggleTheme', () => {
+
+		var currentTheme = wbconfig.get<string>('colorTheme'),
+			dayTheme = nsconfig.get<string>('dayTheme'),
+			nightTheme = nsconfig.get<string>('nightTheme');
+
+		if (currentTheme === dayTheme) {
+			setThemeNight()
+		}
+		else if (currentTheme === dayTheme) {
+			setThemeDay()
+		}
+		else {
+			vscode.window.showInformationMessage('Your current theme is not set to either your day or night theme. Please update your settings.');
+		}
+	});
+}
+
+
+function parseCoordinates(coords: string): number[] {
+	const splcoords = coords.split(/\(|,|\)/);
+	return new Array(Number(splcoords[1]), Number(splcoords[2]))
+}
+
+
+async function locationSwitch(coords: Number[], time: Date, SunCalc: any) {
+	var stimes = SunCalc.getTimes(time, coords[0], coords[1]);
+
+	//Test
+	const currtime = time.getTime(),
+		srise = stimes.sunrise.getTime(),
+		sset = stimes.sunset.getTime();
+
+	console.log('NS: current time: ' + currtime)
+	console.log('NS: sunrise: ' + srise)
+	console.log('NS: sunset: ' + sset)
+
+	const timeToSunrise 	= srise - currtime,
+			timeToSunset 	= sset - currtime;
+
+	console.log('NS: timeToSunrise: ' + timeToSunrise)
+	console.log('NS: timeToSunset: ' + timeToSunset)
+
+	if (timeToSunrise > 0) {
+		// obviously give priority to sunrise
+		console.log('NS: waiting until sunrise...')
+		await sleep(timeToSunrise)
+		setThemeDay()
+		console.log('NS: set theme to day')
+	}
+	else if (timeToSunset > 0) {
+		console.log('waiting until sunset...')
+		await sleep(timeToSunset)
+		setThemeNight()
+		console.log('NS: set theme to night')
+	}
+	else {
+		// this means it's after sunset, but before midnight
+		console.log('NS: waiting until sunrise tomorrow...')
+		// set a virtual time 12hrs from now to get sunrise tomorrow
+		const virtualtime = currtime + 12*60*60*1000;
+		var stimes = SunCalc.getTimes(new Date(virtualtime), coords[0], coords[1]);
+		const srise = stimes.sunrise.getTime()
+
+		console.log('NS: sunrise tomorrow: ' + srise)
+		const timeToSunriseTmrw = srise - currtime
+		console.log('NS: timeToSunriseTmrw: ' + timeToSunriseTmrw)
+		await sleep(timeToSunriseTmrw)
+		setThemeDay()
+	}new Date()
+	locationSwitch(coords, new Date(), SunCalc)
+}
+
+
+function setThemeNight() {
+	wbconfig.update('colorTheme', nsconfig.get<string>('nightTheme'), true);
+}
+
+
+function setThemeDay() {
+	wbconfig.update('colorTheme', nsconfig.get<string>('dayTheme'), true);
+}
+
+
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 // this method is called when your extension is deactivated
 export function deactivate() {
