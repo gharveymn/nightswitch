@@ -9,7 +9,7 @@
 		"color": "#5c2d91",
 		"theme": "dark"
 	},
-	"license": "BSD2, SEE LICENSE",
+	"license": "BSD-2 Clause",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gharveymn/nightswitch"
@@ -39,6 +39,8 @@
 		"test": "node ./node_modules/vscode/bin/test"
 	},
 	"dependencies": {
+		"geoip-lite": "^1.2.0",
+		"get-ip": "^1.2.0",
 		"suncalc": "^1.8.0"
 	},
 	"devDependencies": {
@@ -61,34 +63,39 @@
 				"default": "Default Dark+",
 				"description": "Specifies which theme is to be shown during the night."
 			},
-			"nightswitch.switchTimeAM": {
-				"type": [
-					"string",
-					"null"
-				],
-				"default": null,
-				"description": "Manually specifies the time of switch in the morning."
-			},
-			"nightswitch.switchTimePM": {
-				"type": [
-					"string",
-					"null"
-				],
-				"default": null,
-				"description": "Manually specifies the time of switch in the evening."
-			},
 			"nightswitch.location": {
 				"type": [
 					"string",
 					"null"
 				],
 				"default": null,
-				"description": "Specifies the user location in decimal degrees. Example input: \"49.89,-97.14\"."
+				"description": "(Priority 2) Specifies the user location in decimal degrees. Example input: \"49.89,-97.14\"."
 			},
 			"nightswitch.useGeoLocation": {
 				"type": "boolean",
 				"default": false,
-				"description": "Not implemented yet. By setting this to true you give the extension access to your current location. In any case, no data is transferred to or from this extension."
+				"description": "(Priority 3) Specifies whether to geolocate user. Please note that by setting this to TRUE you give permission to infer your location with your IP address. In any case, no data is transferred to or from this extension."
+			},
+			"nightswitch.sunrise": {
+				"type": [
+					"string",
+					"null"
+				],
+				"default": null,
+				"description": "(Priority 1) Manually set the time of sunrise. Accepts 24-Hour format \"HH:MM\""
+			},
+			"nightswitch.sunset": {
+				"type": [
+					"string",
+					"null"
+				],
+				"default": null,
+				"description": "(Priority 1) Manually set the time of sunset. Accepts 24-Hour format \"HH:MM\", (eg. \"18:30\""
+			},
+			"nightswitch.forceSwitch": {
+				"type": "boolean",
+				"default": true,
+				"description": "Force the theme to switch to day or night (eg. true implies if VSCode has different theme in middle of day, forces switch to dayTheme"
 			}
 		}
 	}
