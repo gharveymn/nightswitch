@@ -8,11 +8,8 @@ var nsconfig = vscode.workspace.getConfiguration('nightswitch');
 
 export function activate(context: vscode.ExtensionContext) {
 
-	// // get the current workbench configuration
-	wbconfig = vscode.workspace.getConfiguration('workbench');
-	// // get the user config for nightswitch
-	nsconfig = vscode.workspace.getConfiguration('nightswitch');
-	var toggle = makeToggle();
+	reload()
+	let toggle = makeToggle();
 
 	//var time = new Date()
 	var time = new Date()
@@ -39,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const forceSwitch = nsconfig.get<boolean>('forceSwitch')
 
 
-	if (nsconfig.get('geolocation')) {
+	if (nsconfig.get('useGeoLocation')) {
 		useGeo(SunCalc, manualTimes, forceSwitch)
 	}
 	else if (nsconfig.get('location') != null) {
@@ -118,6 +115,7 @@ async function locationSwitch(coords: Number[], time: Date, SunCalc: any,
 	console.log('NS: sunrise tomorrow: ' + srisetmrw)
 
 	await timeSwitch(currtime, srise, sset, srisetmrw, forceSwitch)
+	reload()
 	locationSwitch(coords, new Date(), SunCalc, manualTimes, forceSwitch)
 }
 
@@ -167,7 +165,7 @@ async function timeSwitch(currtime: number, srise: number, sset: number, srisetm
 
 function makeToggle() {
 	return vscode.commands.registerCommand('extension.toggleTheme', () => {
-
+		reload()
 		var currentTheme = wbconfig.get<string>('colorTheme'),
 			dayTheme = nsconfig.get<string>('dayTheme'),
 			nightTheme = nsconfig.get<string>('nightTheme');
@@ -175,7 +173,7 @@ function makeToggle() {
 		if (currentTheme === dayTheme) {
 			setThemeNight()
 		}
-		else if (currentTheme === dayTheme) {
+		else if (currentTheme === nightTheme) {
 			setThemeDay()
 		}
 		else {
@@ -203,6 +201,14 @@ function setThemeDay() {
 
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+function reload() {
+	// get the current workbench configuration
+	wbconfig = vscode.workspace.getConfiguration('workbench');
+	// get the user config for nightswitch
+	nsconfig = vscode.workspace.getConfiguration('nightswitch');
 }
 
 

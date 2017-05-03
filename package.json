@@ -4,12 +4,16 @@
 	"description": "Switches between day and night theme at time specified by the user, or based on the user location.",
 	"version": "0.0.1",
 	"publisher": "gharveymn",
-	"icon": "icon/icon.ico",
+	"author": {
+		"name": "Gene Harvey",
+		"email": "gharveymn@gmail.com"
+	},
+	"icon": "icon/icon.svg",
 	"galleryBanner": {
 		"color": "#5c2d91",
 		"theme": "dark"
 	},
-	"license": "BSD-2 Clause",
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gharveymn/nightswitch"
@@ -30,7 +34,56 @@
 				"command": "extension.toggleTheme",
 				"title": "Toggle Day/Night"
 			}
-		]
+		],
+		"configuration": {
+			"title": "NightSwitch",
+			"properties": {
+				"nightswitch.dayTheme": {
+					"type": "string",
+					"default": "Default Light+",
+					"description": "Specifies which theme is to be shown during the day."
+				},
+				"nightswitch.nightTheme": {
+					"type": "string",
+					"default": "Default Dark+",
+					"description": "Specifies which theme is to be shown during the night."
+				},
+				"nightswitch.location": {
+					"type": [
+						"string",
+						"null"
+					],
+					"default": null,
+					"description": "(Priority 2) Specifies the user location in decimal degrees. Example input: \"(49.89,-97.14)\"."
+				},
+				"nightswitch.useGeoLocation": {
+					"type": "boolean",
+					"default": false,
+					"description": "(Priority 3) Specifies whether to geolocate user. Please note that by setting this to true you give permission to infer your location with your IP address."
+				},
+				"nightswitch.sunrise": {
+					"type": [
+						"string",
+						"null"
+					],
+					"default": null,
+					"description": "(Priority 1) Manually set the time of sunrise. Accepts 24-Hour format \"HH:MM\""
+				},
+				"nightswitch.sunset": {
+					"type": [
+						"string",
+						"null"
+					],
+					"default": null,
+					"description": "(Priority 1) Manually set the time of sunset. Accepts 24-Hour format \"HH:MM\", (eg. \"18:30\")"
+				},
+				"nightswitch.forceSwitch": {
+					"type": "boolean",
+					"default": true,
+					"description": "Force the theme to switch to day or night (eg. true implies if VSCode has different theme in middle of day, forces switch to dayTheme)"
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "tsc -p ./",
@@ -50,53 +103,5 @@
 		"@types/node": "^6.0.40",
 		"@types/mocha": "^2.2.32"
 	},
-	"configuration": {
-		"title": "NightSwitch",
-		"properties": {
-			"nightswitch.dayTheme": {
-				"type": "string",
-				"default": "Default Light+",
-				"description": "Specifies which theme is to be shown during the day."
-			},
-			"nightswitch.nightTheme": {
-				"type": "string",
-				"default": "Default Dark+",
-				"description": "Specifies which theme is to be shown during the night."
-			},
-			"nightswitch.location": {
-				"type": [
-					"string",
-					"null"
-				],
-				"default": null,
-				"description": "(Priority 2) Specifies the user location in decimal degrees. Example input: \"49.89,-97.14\"."
-			},
-			"nightswitch.useGeoLocation": {
-				"type": "boolean",
-				"default": false,
-				"description": "(Priority 3) Specifies whether to geolocate user. Please note that by setting this to TRUE you give permission to infer your location with your IP address. In any case, no data is transferred to or from this extension."
-			},
-			"nightswitch.sunrise": {
-				"type": [
-					"string",
-					"null"
-				],
-				"default": null,
-				"description": "(Priority 1) Manually set the time of sunrise. Accepts 24-Hour format \"HH:MM\""
-			},
-			"nightswitch.sunset": {
-				"type": [
-					"string",
-					"null"
-				],
-				"default": null,
-				"description": "(Priority 1) Manually set the time of sunset. Accepts 24-Hour format \"HH:MM\", (eg. \"18:30\""
-			},
-			"nightswitch.forceSwitch": {
-				"type": "boolean",
-				"default": true,
-				"description": "Force the theme to switch to day or night (eg. true implies if VSCode has different theme in middle of day, forces switch to dayTheme"
-			}
-		}
-	}
+	"__metadata": null
 }
