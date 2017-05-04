@@ -1,6 +1,6 @@
 # NightSwitch
 
-Automatically switches your VS Code theme between specified day and night themes.
+Automatically switches your VS Code theme between specified day and night themes. There is a [lighter version](https://marketplace.visualstudio.com/items?itemName=gharveymn.nightswitch-lite) without geolocation.
 
 ## Features
 
@@ -10,6 +10,14 @@ Geolocation is not turned on out of the box to protect privacy, however if you w
 ~~~
 "nightswitch.geolocation": true
 ~~~
+
+Note for GitHub: This extension requires the node modules `suncalc`, `geoip-lite`, and `get-ip`. Install those with 
+~~~
+npm install suncalc
+npm install geoip-lite
+npm install get-ip
+~~~
+in this folder.
 
 ## Requirements
 
@@ -50,6 +58,12 @@ May have some synchronization issues. Haven't removed console logs yet, but you 
 This extension is also way too big right now because of the geoip feature. This is sort of on my todo list, but if someone wants to do that for me I would be soooooooo happy.
 
 ## [CHANGELOG](https://github.com/gharveymn/nightswitch/blob/master/CHANGELOG.md)
+
+### 1.0.1
+Updates readme
+
+### 1.0.0
+Removes useless line updating the location setting from geolocation
 
 ### 0.1.1
 Corrects version number

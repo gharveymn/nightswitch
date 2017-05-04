@@ -1,6 +1,4 @@
 'use strict';
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
 var wbconfig = vscode.workspace.getConfiguration('workbench');
@@ -80,7 +78,6 @@ function useGeo(SunCalc: any, manualTimes: number[], forceSwitch: boolean) {
 			const geoip = require('geoip-lite');
 			const geoCoords = geoip.lookup(ip).ll;
 			console.log('NS: geoCoords: (' + geoCoords[0] + ',' + geoCoords[1] + ')');
-			nsconfig.update('location', '(' + geoCoords[0] + ',' + geoCoords[1] + ')', true)
 			locationSwitch(geoCoords, new Date(), SunCalc, manualTimes, forceSwitch)
 		});
 }

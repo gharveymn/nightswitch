@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.0.1
+Updates readme
+
+### 1.0.0
+Removes useless line updating the location setting from geolocation
+
 ### 0.1.1
 Corrects version number
 
