@@ -2,6 +2,8 @@
 
 Automatically switches your VS Code theme between specified day and night themes. There is a [lighter version](https://marketplace.visualstudio.com/items?itemName=gharveymn.nightswitch-lite) without geolocation.
 
+*Size warning: this extension will take up about 86 MB because of the geolocation feature. If you don't want that just install [NightSwitch-Lite](https://marketplace.visualstudio.com/items?itemName=gharveymn.nightswitch-lite) (you can still manually set your location).*
+
 ## Features
 
 Allows for automatic geolocation based on IP and manual GPS coordinate location.
