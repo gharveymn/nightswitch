@@ -61,6 +61,9 @@ This extension is also way too big right now because of the geoip feature. This 
 
 ## [CHANGELOG](https://github.com/gharveymn/nightswitch/blob/master/CHANGELOG.md)
 
+### 1.0.3
+Fixes bug where `nightswitch.geolocation` did not have the same name in the code
+
 ### 1.0.1
 Updates readme
 

@@ -2,7 +2,7 @@
     "name": "nightswitch",
     "displayName": "NightSwitch",
     "description": "Switches between day and night theme at time specified by the user, or based on the user location.",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "publisher": "gharveymn",
     "author": {
         "name": "Gene Harvey",
@@ -64,7 +64,7 @@
                     "default": null,
                     "description": "(Priority 2) Specifies the user location in decimal degrees. Example input: \"(49.89,-97.14)\"."
                 },
-                "nightswitch.useGeoLocation": {
+                "nightswitch.geolocation": {
                     "type": "boolean",
                     "default": false,
                     "description": "(Priority 3) Specifies whether to geolocate user. Please note that by setting this to true you give permission to infer your location with your IP address."

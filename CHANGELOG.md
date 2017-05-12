@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.3
+Fixes bug where `nightswitch.geolocation` did not have the same name in the code
+
 ### 1.0.1
 Updates readme
 

@@ -47,7 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
 			locationSwitch(coords, time, SunCalc, manualTimes, forceSwitch)
 		}
 	}
-	else if (nsconfig.get('useGeoLocation')) {
+	else if (nsconfig.get('geolocation')) {
 		useGeo(SunCalc, manualTimes, forceSwitch)
 	}
 	console.info('NS: NightSwitch is now active!');
