@@ -34,7 +34,7 @@ None. Probably safer to set your main theme to either the day or night theme fro
 	- sets the theme to be shown at night (eg. "Default Dark+")
 - `"nightswitch.location"`
 	- specifies a user defined GPS location in decimal degrees (eg. \"(49.89,-97.14)\")
-- `"nightswitch.useGeoLocation"`
+- `"nightswitch.geolocation"`
 	- specifies whether to infer user location based on IP address (default false)
 - `"nightswitch.sunrise"`
 	- manually sets the time to switch theme to day
@@ -61,7 +61,7 @@ This extension is also way too big right now because of the geoip feature. This 
 
 ## [CHANGELOG](https://github.com/gharveymn/nightswitch/blob/master/CHANGELOG.md)
 
-### 1.0.3
+### 1.0.4
 Fixes bug where `nightswitch.geolocation` did not have the same name in the code
 
 ### 1.0.1
