@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.5
+Fixes issue where manually setting the time didn't do anything.
+
 ### 1.0.4
 Fixes bug where `nightswitch.geolocation` did not have the same name in the code
 

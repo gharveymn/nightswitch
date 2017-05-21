@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 
 var wbconfig = vscode.workspace.getConfiguration('workbench');
 var nsconfig = vscode.workspace.getConfiguration('nightswitch');
+const unreachable = [644,105];
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -22,6 +23,8 @@ export function activate(context: vscode.ExtensionContext) {
 	var srisemanual = -1
 	var ssetmanual = -1
 	var srisetmrwmanual = -1
+	var ssettmrwmanual = -1
+
 	if (srisestr != null) {
 		srisemanual = parseManualTime(srisestr,time)
 		srisetmrwmanual = srisemanual+24*60*60*1000
@@ -29,9 +32,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	if (ssetstr != null) {
 		ssetmanual = parseManualTime(ssetstr,time)
+		ssettmrwmanual = ssetmanual+24*60*60*1000
 	}
 
-	const manualTimes = [srisemanual,ssetmanual,srisetmrwmanual]
+	const manualTimes = [srisemanual,ssetmanual,srisetmrwmanual,ssettmrwmanual]
 	const forceSwitch = nsconfig.get<boolean>('forceSwitch')
 
 
@@ -49,6 +53,12 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 	else if (nsconfig.get('geolocation')) {
 		useGeo(SunCalc, manualTimes, forceSwitch)
+	}
+	else if (nsconfig.get('sunrise') != null || nsconfig.get('sunset') != null) {
+		console.log('NSL: running manual sunrise or sunset')
+
+		//set coords to unreachable value
+		locationSwitch(unreachable, time, SunCalc, manualTimes, forceSwitch)
 	}
 	console.info('NS: NightSwitch is now active!');
 }
@@ -93,8 +103,9 @@ async function locationSwitch(coords: Number[], time: Date, SunCalc: any,
 	var srise = manualTimes[0]
 	var sset = manualTimes[1]
 	var srisetmrw = manualTimes[2]
+	var ssettmrw = manualTimes[3]
 	
-	if (srise=== -1)
+	if (srise=== -1 && coords != unreachable)
 	{
 		srise = stimes.sunrise.getTime()
 		// set a virtual time 12hrs from now to get sunrise tomorrow
@@ -103,23 +114,25 @@ async function locationSwitch(coords: Number[], time: Date, SunCalc: any,
 		srisetmrw = stimestmrw.sunrise.getTime()
 	}
 
-	if (sset === -1)
+	if (sset === -1 && coords != unreachable)
 	{
 		sset = stimes.sunset.getTime();
+		//If we have location then we never should need sunset tomorrow
 	}
 
 	console.log('NS: current time: ' + currtime)
 	console.log('NS: sunrise: ' + srise)
 	console.log('NS: sunset: ' + sset)
 	console.log('NS: sunrise tomorrow: ' + srisetmrw)
+	console.log('NSL: sunset tomorrow: ' + ssettmrw)
 
-	await timeSwitch(currtime, srise, sset, srisetmrw, forceSwitch)
+	await timeSwitch(currtime, srise, sset, srisetmrw, ssettmrw, forceSwitch)
 	reload()
 	locationSwitch(coords, new Date(), SunCalc, manualTimes, forceSwitch)
 }
 
 
-async function timeSwitch(currtime: number, srise: number, sset: number, srisetmrw: number, forceSwitch: boolean) {
+async function timeSwitch(currtime: number, srise: number, sset: number, srisetmrw: number, ssettmrw: number, forceSwitch: boolean) {
 	const timeToSunrise = srise - currtime,
 		timeToSunset = sset - currtime;
 
@@ -149,15 +162,25 @@ async function timeSwitch(currtime: number, srise: number, sset: number, srisetm
 	else {
 		// this means it's after sunset but before midnight
 
-		if (forceSwitch) {
+		if (forceSwitch && !(srise==-1 || sset==-1)) {
 			setThemeNight()
 		}
-		console.log('NS: waiting until sunrise tomorrow...')
-		console.log('NS: sunrise tomorrow: ' + srisetmrw)
-		const timeToSunriseTmrw = srisetmrw - currtime
-		console.log('NS: timeToSunriseTmrw: ' + timeToSunriseTmrw)
-		await sleep(timeToSunriseTmrw)
-		setThemeDay()
+		if(srise==-1) {
+			console.log('NSL: waiting until sunset tomorrow...')
+			console.log('NSL: sunset tomorrow: ' + ssettmrw)
+			const timeToSunsetTmrw = ssettmrw - currtime
+			console.log('NSL: timeToSunsetTmrw: ' + timeToSunsetTmrw)
+			await sleep(timeToSunsetTmrw)
+			setThemeNight()
+		}
+		else {
+			console.log('NSL: waiting until sunrise tomorrow...')
+			console.log('NSL: sunrise tomorrow: ' + srisetmrw)
+			const timeToSunriseTmrw = srisetmrw - currtime
+			console.log('NSL: timeToSunriseTmrw: ' + timeToSunriseTmrw)
+			await sleep(timeToSunriseTmrw)
+			setThemeDay()
+		}
 	}
 }
 

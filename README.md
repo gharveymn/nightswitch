@@ -29,19 +29,19 @@ None. Probably safer to set your main theme to either the day or night theme fro
 
 
 - `"nightswitch.dayTheme"` 
-	- sets the theme to be shown during the day (eg. "Solarized Light")
+	- sets the theme to be shown during the day (eg. `"Solarized Light"`)
 - `"nightswitch.nightTheme"` 
-	- sets the theme to be shown at night (eg. "Default Dark+")
+	- sets the theme to be shown at night (eg. `"Default Dark+"`)
 - `"nightswitch.location"`
-	- specifies a user defined GPS location in decimal degrees (eg. \"(49.89,-97.14)\")
+	- specifies a user defined GPS location in decimal degrees (eg. `"(49.89,-97.14)"`)
 - `"nightswitch.geolocation"`
-	- specifies whether to infer user location based on IP address (default false)
+	- specifies whether to infer user location based on IP address (default `false`)
 - `"nightswitch.sunrise"`
-	- manually sets the time to switch theme to day
+	- manually sets the time to switch theme to day, with priority over location (24hr time, eg. `"6:00"`)
 - `"nightswitch.sunset"`
-	- manually sets the time to switch theme to night
+	- manually sets the time to switch theme to night, with priority over location (24hr time, eg. `"18:00"`)
 - `"nightswitch.forceSwitch"`
-	- forces the theme to switch to currently canonical theme, ie. if it is day and you have your theme set to something other than `nightswitch.dayTheme`, resets the theme to `nightswitch.dayTheme`.
+	- forces the theme to switch to currently canonical theme, ie. if it is day and you have your theme set to something other than `nightswitch.dayTheme`, resets the theme to `nightswitch.dayTheme` (default `true`).
 
 
 ## Extension Commands
@@ -60,6 +60,9 @@ May have some synchronization issues. Haven't removed console logs yet, but you 
 This extension is also way too big right now because of the geoip feature. This is sort of on my todo list, but if someone wants to do that for me I would be soooooooo happy.
 
 ## [CHANGELOG](https://github.com/gharveymn/nightswitch/blob/master/CHANGELOG.md)
+
+### 1.0.5
+Fixes issue where manually setting the time didn't do anything.
 
 ### 1.0.4
 Fixes bug where `nightswitch.geolocation` did not have the same name in the code
