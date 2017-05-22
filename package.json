@@ -2,7 +2,7 @@
     "name": "nightswitch",
     "displayName": "NightSwitch",
     "description": "Switches between day and night theme at time specified by the user, or based on the user location.",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "publisher": "gharveymn",
     "author": {
         "name": "Gene Harvey",
@@ -101,7 +101,7 @@
     },
     "dependencies": {
         "geoip-lite": "^1.2.0",
-        "get-ip": "^1.2.0",
+        "public-ip": "^2.3.5",
         "suncalc": "^1.8.0"
     },
     "devDependencies": {

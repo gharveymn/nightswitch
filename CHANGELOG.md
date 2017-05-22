@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.6
+Should fix the issue where we were using local ip addresses rather than public.
+
 ### 1.0.5
 Fixes issue where manually setting the time didn't do anything.
 

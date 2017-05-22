@@ -81,11 +81,10 @@ function parseManualTime(date: string, time: Date):number {
 
 
 function useGeo(SunCalc: any, manualTimes: number[], forceSwitch: boolean) {
-	const getIp = require('get-ip');
-	getIp().then(
-		function (res) {
-			const ip = res[0];
+	const publicIp = require('public-ip');
+	publicIp.v4().then(ip => {
 			const geoip = require('geoip-lite');
+			console.log('NS: public-ip: ' + ip)
 			const geoCoords = geoip.lookup(ip).ll;
 			console.log('NS: geoCoords: (' + geoCoords[0] + ',' + geoCoords[1] + ')');
 			locationSwitch(geoCoords, new Date(), SunCalc, manualTimes, forceSwitch)

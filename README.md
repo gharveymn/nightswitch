@@ -4,6 +4,15 @@ Automatically switches your VS Code theme between specified day and night themes
 
 *Size warning: this extension will take up about 86 MB because of the geolocation feature. If you don't want that just install [NightSwitch-Lite](https://marketplace.visualstudio.com/items?itemName=gharveymn.nightswitch-lite) (you can still manually set your location).*
 
+## Quickstart
+
+If you want the geolocation feature, install the extension and go to your preferences. Add the settings 
+~~~
+"nightswitch.dayTheme": "[YourDayTheme]"
+"nightswitch.nightTheme": "[YourNightTheme]"
+"nightswitch.geolocation": true
+~~~
+
 ## Features
 
 Allows for automatic geolocation based on IP and manual GPS coordinate location.
@@ -13,13 +22,13 @@ Geolocation is not turned on out of the box to protect privacy, however if you w
 "nightswitch.geolocation": true
 ~~~
 
-Note for GitHub: This extension requires the node modules `suncalc`, `geoip-lite`, and `get-ip`. Install those with 
+Note for GitHub: This extension requires the node modules `suncalc`, `geoip-lite`, and `public-ip`. Install those with 
 ~~~
 npm install suncalc
 npm install geoip-lite
-npm install get-ip
+npm install public-ip
 ~~~
-in this folder.
+in this folder. You'll also need the .vscode folder, which you can create using Yeoman or something.
 
 ## Requirements
 
@@ -60,6 +69,9 @@ May have some synchronization issues. Haven't removed console logs yet, but you 
 This extension is also way too big right now because of the geoip feature. This is sort of on my todo list, but if someone wants to do that for me I would be soooooooo happy.
 
 ## [CHANGELOG](https://github.com/gharveymn/nightswitch/blob/master/CHANGELOG.md)
+
+### 1.0.6
+Should fix the issue where we were using local ip addresses rather than public.
 
 ### 1.0.5
 Fixes issue where manually setting the time didn't do anything.
