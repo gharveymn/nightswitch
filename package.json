@@ -19,7 +19,7 @@
         "url": "https://github.com/gharveymn/nightswitch"
     },
     "engines": {
-        "vscode": "^1.11.0"
+        "vscode": "^1.16.0"
     },
     "categories": [
         "Other"
@@ -101,7 +101,7 @@
     },
     "dependencies": {
         "geoip-lite": "^1.2.0",
-        "get-ip": "^1.2.0",
+        "public-ip": "^1.2.0",
         "suncalc": "^1.8.0"
     },
     "devDependencies": {
