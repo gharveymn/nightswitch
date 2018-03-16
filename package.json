@@ -2,13 +2,13 @@
     "name": "nightswitch",
     "displayName": "NightSwitch",
     "description": "Switches between day and night theme at time specified by the user, or based on the user location.",
-    "version": "1.0.6",
+    "version": "1.1.0",
     "publisher": "gharveymn",
     "author": {
         "name": "Gene Harvey",
         "email": "gharveymn@gmail.com"
     },
-    "icon": "icon/icon.svg",
+    "icon": "icon/icon.ico",
     "galleryBanner": {
         "color": "#1E415D",
         "theme": "dark"
@@ -19,7 +19,7 @@
         "url": "https://github.com/gharveymn/nightswitch"
     },
     "engines": {
-        "vscode": "^1.11.0"
+        "vscode": "^1.16.0"
     },
     "categories": [
         "Other"
@@ -85,10 +85,10 @@
                     "default": null,
                     "description": "(Priority 1) Manually set the time of sunset. Accepts 24-Hour format \"HH:MM\", (eg. \"18:30\")"
                 },
-                "nightswitch.forceSwitch": {
+                "nightswitch.autoSwitch": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Force the theme to switch to day or night (eg. true implies if VSCode has different theme in middle of day, forces switch to dayTheme)"
+                    "description": "Automatically switch the theme to day or night (if VSCode has different theme in middle of day, automatically switches to dayTheme)"
                 }
             }
         }
