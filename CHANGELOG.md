@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.1.0
+Fixes issue where the theme wouldn't update after coming out of restore on Linux.
+
 ### 1.0.6
 Should fix the issue where we were using local ip addresses rather than public.
 

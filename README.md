@@ -62,12 +62,6 @@ None. Probably safer to set your main theme to either the day or night theme fro
 - `Switch to Night Theme`
 	- switches the theme to `nightswitch.nightTheme`
 
-## Known Issues
-
-May have some synchronization issues. Haven't removed console logs yet, but you won't see these.
-
-This extension is also way too big right now because of the geoip feature. This is sort of on my todo list, but if someone wants to do that for me I would be soooooooo happy.
-
 ## [CHANGELOG](https://github.com/gharveymn/nightswitch/blob/master/CHANGELOG.md)
 
 ### 1.0.6

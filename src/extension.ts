@@ -2,15 +2,16 @@
 import {workspace, window, commands, ExtensionContext} from 'vscode';
 
 const SunCalc = require('suncalc');
+const geoip = require('geoip-lite');
 
 var wbconfig = workspace.getConfiguration('workbench');
 var nsconfig = workspace.getConfiguration('nightswitch');
 var autoSwitch, time, hasShownEnableMsgOnce;
-const unreachable = [644, 105];
 
 export function activate(context: ExtensionContext)
 {
 
+	autoSwitch = nsconfig.get<boolean>('autoSwitch')
 	context.subscriptions.push(makeToggle());
 	context.subscriptions.push(makeSwitchDay());
 	context.subscriptions.push(makeSwitchNight());
@@ -27,7 +28,7 @@ export function activate(context: ExtensionContext)
 	const manualTimes = [srisemanual, ssetmanual, srisetmrwmanual, ssettmrwmanual]
 
 	recheck();
-	console.info('NS: NightSwitch is now active!');
+	console.info('NightSwitch is now active!');
 }
 
 
@@ -52,10 +53,9 @@ function useGeo(manualTimes: number[])
 {
 	const publicIp = require('public-ip');
 	publicIp.v4().then(ip => {
-			const geoip = require('geoip-lite');
-			console.log('NS: public-ip: ' + ip)
+			// console.log('NS: public-ip: ' + ip)
 			const geoCoords = geoip.lookup(ip).ll;
-			console.log('NS: geoCoords: (' + geoCoords[0] + ',' + geoCoords[1] + ')');
+			// console.log('NS: geoCoords: (' + geoCoords[0] + ',' + geoCoords[1] + ')');
 			locationSwitch(geoCoords, manualTimes)
 		});
 }
@@ -71,7 +71,7 @@ function locationSwitch(coords: Number[], manualTimes: number[])
 	}
 
 	// if coords are set then get the sun times
-	if(coords != unreachable)
+	if(coords != null)
 	{
 		var stimes = SunCalc.getTimes(time, coords[0], coords[1]);
 	}
@@ -85,13 +85,13 @@ function locationSwitch(coords: Number[], manualTimes: number[])
 		ssettmrw = manualTimes[3];
 
 	// if manual sunrise is not set and the coordinates are set then get the time of sunrise
-	if(srise === -1 && coords != unreachable)
+	if(srise === -1 && coords != null)
 	{
 		srise = stimes.sunrise.getTime()
 	}
 
 	// get the time of sunset
-	if(sset === -1 && coords != unreachable)
+	if(sset === -1 && coords != null)
 	{
 		sset = stimes.sunset.getTime();
 	}
@@ -228,7 +228,7 @@ function showAutoSwitchMsg()
 function recheck()
 {
 	reloadConfig()
-	autoSwitch = nsconfig.get<boolean>('autoSwitch')
+	
 	const srisestr = nsconfig.get<string>('sunrise')
 	const ssetstr = nsconfig.get<string>('sunset')
 
@@ -255,7 +255,7 @@ function recheck()
 
 	if(nsconfig.get('location') != null)
 	{
-		console.log('NS: running location');
+		// console.log('NS: running location');
 		const coords = parseCoordinates(nsconfig.get<string>('location'))
 		if(Number.isNaN(coords[0]) || Number.isNaN(coords[1]))
 		{
@@ -263,7 +263,7 @@ function recheck()
 		}
 		else
 		{
-			console.log('NS: (' + coords[0] + ',' + coords[1] + ')');
+			// console.log('NS: (' + coords[0] + ',' + coords[1] + ')');
 			locationSwitch(coords, manualTimes)
 		}
 	}
@@ -273,10 +273,10 @@ function recheck()
 	}
 	else if(nsconfig.get('sunrise') != null || nsconfig.get('sunset') != null)
 	{
-		console.log('NSL: running manual sunrise or sunset')
+		// console.log('NSL: running manual sunrise or sunset')
 
 		//set coords to unreachable value
-		locationSwitch(unreachable, manualTimes)
+		locationSwitch(null, manualTimes)
 	}
 }
 
