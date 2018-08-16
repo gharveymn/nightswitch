@@ -1,17 +1,23 @@
 'use strict';
 import {workspace, window, commands, ExtensionContext} from 'vscode';
 
-const SunCalc = require('suncalc');
-const geoip = require('geoip-lite');
+const SunCalc  = require('suncalc');
+const geoip    = require('geoip-lite');
+const publicIp = require('public-ip');
 
 var wbconfig = workspace.getConfiguration('workbench');
 var nsconfig = workspace.getConfiguration('nightswitch');
-var autoSwitch, time, hasShownEnableMsgOnce;
+var autoSwitch, hasShownEnableMsgOnce, hasShownFixSettingsOnce;
 
 export function activate(context: ExtensionContext)
 {
+	hasShownEnableMsgOnce = false;
+	hasShownFixSettingsOnce = false;
 
-	autoSwitch = nsconfig.get<boolean>('autoSwitch')
+	autoSwitch = nsconfig.get<boolean>('autoSwitch');
+
+	recheck();
+
 	context.subscriptions.push(makeToggle());
 	context.subscriptions.push(makeSwitchDay());
 	context.subscriptions.push(makeSwitchNight());
@@ -20,26 +26,20 @@ export function activate(context: ExtensionContext)
 	context.subscriptions.push(window.onDidChangeActiveTextEditor(recheck));
 	context.subscriptions.push(window.onDidChangeTextEditorViewColumn(recheck));
 
-	var srisemanual = -1
-	var ssetmanual = -1
-	var srisetmrwmanual = -1
-	var ssettmrwmanual = -1
-
-	const manualTimes = [srisemanual, ssetmanual, srisetmrwmanual, ssettmrwmanual]
-
-	recheck();
-	console.info('NightSwitch is now active!');
+	// recheck every 5 minutes
+	setInterval(recheck, 1000*60*5);
+	console.info('NightSwitch-Lite is now active!');
 }
 
 
-function parseManualTime(date: string, time: Date): number
+function parseManualTime(time: string, date: Date): number
 {
-	const hm = date.split(':')
-	const fullTime = time.getTime()
-	const currentHours = time.getHours() * 60 * 60 * 1000
-	const currentMinutes = time.getMinutes() * 60 * 1000
-	const currentSeconds = time.getSeconds() * 1000
-	const currentMilliseconds = time.getMilliseconds()
+	const hm = time.split(':');
+	const fullTime = date.getTime();
+	const currentHours = date.getHours() * 60 * 60 * 1000;
+	const currentMinutes = date.getMinutes() * 60 * 1000;
+	const currentSeconds = date.getSeconds() * 1000;
+	const currentMilliseconds = date.getMilliseconds();
 
 	const todayStart = fullTime - currentHours - currentMinutes - currentSeconds - currentMilliseconds
 
@@ -49,66 +49,13 @@ function parseManualTime(date: string, time: Date): number
 }
 
 
-function useGeo(manualTimes: number[])
-{
-	const publicIp = require('public-ip');
-	publicIp.v4().then(ip => {
-			// console.log('NS: public-ip: ' + ip)
-			const geoCoords = geoip.lookup(ip).ll;
-			// console.log('NS: geoCoords: (' + geoCoords[0] + ',' + geoCoords[1] + ')');
-			locationSwitch(geoCoords, manualTimes)
-		});
-}
-
-
-function locationSwitch(coords: Number[], manualTimes: number[]) 
-{
-
-	// if autoSwitch is turned off then return immediately
-	if(!autoSwitch)
-	{
-		return;
-	}
-
-	// if coords are set then get the sun times
-	if(coords != null)
-	{
-		var stimes = SunCalc.getTimes(time, coords[0], coords[1]);
-	}
-
-	// get the current time
-	const currtime = time.getTime()
-
-	let srise = manualTimes[0],
-		sset = manualTimes[1],
-		srisetmrw = manualTimes[2],
-		ssettmrw = manualTimes[3];
-
-	// if manual sunrise is not set and the coordinates are set then get the time of sunrise
-	if(srise === -1 && coords != null)
-	{
-		srise = stimes.sunrise.getTime()
-	}
-
-	// get the time of sunset
-	if(sset === -1 && coords != null)
-	{
-		sset = stimes.sunset.getTime();
-	}
-
-	timeSwitch(currtime, srise, sset)
-
-}
-
-
 function timeSwitch(currtime: number, srise: number, sset: number)
 {
 	const timeToSunrise = srise - currtime,
-		timeToSunset = sset - currtime;
+		 timeToSunset  = sset  - currtime;
 
 	if(timeToSunrise > 0)
 	{
-		// obviously give priority to sunrise
 		setThemeNight()
 	}
 	else if(timeToSunset > 0)
@@ -118,12 +65,7 @@ function timeSwitch(currtime: number, srise: number, sset: number)
 	else
 	{
 		// this means it's after sunset but before midnight
-		// if we are using manual time but dont specify one of them without location, then we don't assume anything
-
-		if(!(srise == -1 || sset == -1))
-		{
-			setThemeNight()
-		}
+		setThemeNight()
 	}
 }
 
@@ -202,84 +144,116 @@ function enableAutoSwitch()
 
 function parseCoordinates(coords: string): number[]
 {
-	const splcoords = coords.replace(/\(|\)/g, '').split(/,/);
-	return new Array(Number(splcoords[0]), Number(splcoords[1]))
+	if(coords != null)
+	{
+		const splcoords = coords.replace(/\(|\)/g, '').split(/,/);
+		return new Array(Number(splcoords[0]), Number(splcoords[1]))
+	}
+	else
+	{
+		return null;
+	}
 }
 
 
 function setThemeNight()
 {
-	wbconfig.update('colorTheme', nsconfig.get<string>('nightTheme'), true);
+	wbconfig.update('colorTheme', nsconfig.get<string>('nightTheme'), true)
 }
 
 
 function setThemeDay()
 {
-	wbconfig.update('colorTheme', nsconfig.get<string>('dayTheme'), true);
+	wbconfig.update('colorTheme', nsconfig.get<string>('dayTheme'), true)
 }
 
 function showAutoSwitchMsg()
 {
-	window.showInformationMessage('Automatic switching has been disabled. To reenable, use the command "Enable Automatic Theme Switching".', 'Click here to reenable').then(fulfilled => {autoSwitch = true; recheck();});
+	window.showInformationMessage('Automatic switching has been disabled. To reenable, use the command "Enable Automatic Theme Switching".', 
+	'Click here to reenable').then(fulfilled => {autoSwitch = true; recheck();});
 	hasShownEnableMsgOnce = true;
 }
 
-
 function recheck()
 {
-	reloadConfig()
+
+	if(!autoSwitch)
+	{
+		return;
+	}
 	
-	const srisestr = nsconfig.get<string>('sunrise')
-	const ssetstr = nsconfig.get<string>('sunset')
+	reloadConfig();
 
-	time = new Date()
+	let srisetime, ssettime;
 
-	let srisemanual = -1,
-		ssetmanual = -1,
-		srisetmrwmanual = -1,
-		ssettmrwmanual = -1;
+	const currdate = new Date();
+	let coords = parseCoordinates(nsconfig.get<string>('location'));
+	let srisestr = nsconfig.get<string>('sunrise');
+	let ssetstr = nsconfig.get<string>('sunset');
 
+
+	if(coords != null && (Number.isNaN(coords[0]) || Number.isNaN(coords[1])))
+	{
+		window.showWarningMessage("Please set your coordinates in decimal degrees so that NightSwitch-lite can parse them (example: \"(49.89,-97.14)\").");
+		return;
+	}
+
+	if(coords == null && nsconfig.get("geolocation"))
+	{
+		publicIp.v4().then(ip => {
+			// console.log('NS: public-ip: ' + ip)
+			coords = geoip.lookup(ip).ll;
+		});
+	}
+
+	if(coords != null)
+	{
+
+		const tmp_hours = currdate.getHours();
+		currdate.setHours(12);
+
+		const calculatedTimes = SunCalc.getTimes(currdate, coords[0], coords[1]);
+
+		currdate.setHours(tmp_hours);
+
+		srisetime = calculatedTimes.sunrise.getTime();
+		ssettime = calculatedTimes.sunset.getTime();
+
+	}
+
+	// takes precedence over location-based
 	if(srisestr != null)
 	{
-		srisemanual = parseManualTime(srisestr, time)
-		srisetmrwmanual = srisemanual + 24 * 60 * 60 * 1000
+		srisetime = parseManualTime(srisestr, currdate);
+		if(Number.isNaN(srisetime))
+		{
+			window.showWarningMessage("Something went wrong with your manually set sunrise time. Please use 24-hour format (HH:MM).");
+			return;
+		}
 	}
 
 	if(ssetstr != null)
 	{
-		ssetmanual = parseManualTime(ssetstr, time)
-		ssettmrwmanual = ssetmanual + 24 * 60 * 60 * 1000
-	}
-
-	const manualTimes = [srisemanual, ssetmanual, srisetmrwmanual, ssettmrwmanual]
-
-	if(nsconfig.get('location') != null)
-	{
-		// console.log('NS: running location');
-		const coords = parseCoordinates(nsconfig.get<string>('location'))
-		if(Number.isNaN(coords[0]) || Number.isNaN(coords[1]))
+		ssettime = parseManualTime(ssetstr, currdate);
+		if(Number.isNaN(ssettime))
 		{
-			window.showWarningMessage('Something went wrong with your coordinates. Try using the format \"(xxx.xxxx,yyy.yyyy)\".')
-		}
-		else
-		{
-			// console.log('NS: (' + coords[0] + ',' + coords[1] + ')');
-			locationSwitch(coords, manualTimes)
+			window.showWarningMessage("Something went wrong with your manually set sunset time. Please use 24-hour format (HH:MM).");
+			return;
 		}
 	}
-	else if(nsconfig.get('geolocation'))
-	{
-		useGeo(manualTimes)
-	}
-	else if(nsconfig.get('sunrise') != null || nsconfig.get('sunset') != null)
-	{
-		// console.log('NSL: running manual sunrise or sunset')
 
-		//set coords to unreachable value
-		locationSwitch(null, manualTimes)
+	if((typeof srisetime == "undefined") || typeof ssettime == "undefined")
+	{
+		window.showInformationMessage("Please edit your settings to specify how NightSwitch will locate you.", 
+		"Go to settings").then(fulfilled => {commands.executeCommand("workbench.action.openSettings")});
+		hasShownFixSettingsOnce = true;
+		return;
 	}
+
+	
+	timeSwitch(currdate.getTime(), srisetime, ssettime);
+
 }
-
 
 function reloadConfig()
 {
