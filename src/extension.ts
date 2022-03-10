@@ -211,12 +211,12 @@ async function setConfigThemeDay()
 	let theme_day = await window.showInputBox(
 		{
 			ignoreFocusOut: true,
-			value: ns_config.get<string>('themeDay'),
+			value: ns_config.get<string>('dayTheme'),
 			prompt: "Specify your day theme"
 		})
 	if(theme_day !== undefined)
 	{
-		await ns_config.update('themeDay', theme_day, true);
+		await ns_config.update('dayTheme', theme_day, true);
 	}
 	recheck();
 }
@@ -226,12 +226,12 @@ async function setConfigThemeNight()
 	let theme_night = await window.showInputBox(
 		{
 			ignoreFocusOut: true, 
-			value: ns_config.get<string>('themeNight'), 
+			value: ns_config.get<string>('nightTheme'), 
 			prompt: "Specify your night theme"
 		})
 	if(theme_night !== undefined)
 	{
-		await ns_config.update('themeNight', theme_night, true);
+		await ns_config.update('nightTheme', theme_night, true);
 	}
 	recheck();
 }
@@ -468,14 +468,14 @@ async function setup()
 function getThemeDay()
 {
 	let theme_day_old;
-	let td_inspect = ns_config.inspect('themeDay');
+	let td_inspect = ns_config.inspect('dayTheme');
 	if(td_inspect.globalValue)
 	{
 		return td_inspect.globalValue;
 	}
 	else if((theme_day_old = ns_config.get('dayTheme')) !== undefined)
 	{
-		ns_config.update('themeDay', theme_day_old, true);
+		ns_config.update('dayTheme', theme_day_old, true);
 		return theme_day_old;
 	}
 	else
@@ -487,14 +487,14 @@ function getThemeDay()
 function getThemeNight()
 {
 	let theme_night_old;
-	let tn_inspect = ns_config.inspect('themeNight');
+	let tn_inspect = ns_config.inspect('nightTheme');
 	if(tn_inspect.globalValue)
 	{
 		return tn_inspect.globalValue;
 	}
 	else if((theme_night_old = ns_config.get('nightTheme')) !== undefined)
 	{
-		ns_config.update('themeNight', theme_night_old, true);
+		ns_config.update('nightTheme', theme_night_old, true);
 		return theme_night_old;
 	}
 	else
