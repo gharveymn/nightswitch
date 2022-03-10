@@ -1,5 +1,5 @@
 'use strict';
-import {workspace, window, commands, ExtensionContext} from 'vscode';
+import {workspace, window, commands, ExtensionContext, ConfigurationTarget} from 'vscode';
 
 const SunCalc = require('suncalc');
 const Coordinates = require("coordinate-parser");
@@ -129,12 +129,12 @@ function createCmdToggleTheme()
 		reloadWorkbenchConfig();
 		reloadNightSwitchConfig();
 		var curr_theme = wb_config.get('colorTheme')
-		if(curr_theme === getThemeDay())
+		if(curr_theme === ns_config.get('themeDay'))
 		{
 			disableAutoSwitch();
 			setThemeNight();
 		}
-		else if(curr_theme === getThemeNight())
+		else if(curr_theme === ns_config.get('themeNight'))
 		{
 			disableAutoSwitch();
 			setThemeDay();
@@ -211,12 +211,12 @@ async function setConfigThemeDay()
 	let theme_day = await window.showInputBox(
 		{
 			ignoreFocusOut: true,
-			value: ns_config.get<string>('dayTheme'),
+			value: ns_config.get<string>('themeDay'),
 			prompt: "Specify your day theme"
 		})
 	if(theme_day !== undefined)
 	{
-		await ns_config.update('dayTheme', theme_day, true);
+		await ns_config.update('themeDay', theme_day, true);
 	}
 	recheck();
 }
@@ -226,12 +226,12 @@ async function setConfigThemeNight()
 	let theme_night = await window.showInputBox(
 		{
 			ignoreFocusOut: true, 
-			value: ns_config.get<string>('nightTheme'), 
+			value: ns_config.get<string>('themeNight'), 
 			prompt: "Specify your night theme"
 		})
 	if(theme_night !== undefined)
 	{
-		await ns_config.update('nightTheme', theme_night, true);
+		await ns_config.update('themeNight', theme_night, true);
 	}
 	recheck();
 }
@@ -300,26 +300,38 @@ function parseCoordinates(coords: string)
 	}
 }
 
-
-function setThemeNight()
+function setTheme(section: string)
 {
 	reloadWorkbenchConfig();
-	let theme_night = getThemeNight();
-	if(wb_config.get('colorTheme') !== theme_night)
+	let theme_name = ns_config.get(section);
+	if(wb_config.get('colorTheme') !== theme_name)
 	{
-		wb_config.update('colorTheme', theme_night, true)
+		let theme_config_info = ns_config.inspect(section);
+		let target;
+		if(theme_config_info.workspaceFolderValue !== undefined)
+		{
+			target = ConfigurationTarget.WorkspaceFolder;
+		}
+		else if(theme_config_info.workspaceValue !== undefined)
+		{
+			target = ConfigurationTarget.Workspace;
+		}
+		else
+		{
+			target = ConfigurationTarget.Global;
+		}
+		wb_config.update('colorTheme', theme_name, target)
 	}
 }
 
+function setThemeNight()
+{
+	setTheme("themeNight");
+}
 
 function setThemeDay()
 {
-	reloadWorkbenchConfig();
-	let theme_day = getThemeDay();
-	if(wb_config.get('colorTheme') !== theme_day)
-	{
-		wb_config.update('colorTheme', theme_day, true)
-	}
+	setTheme("themeDay");
 }
 
 function disableAutoSwitch()
@@ -461,46 +473,6 @@ async function setup()
 	// location
 	await setConfigLocation();
 	
-}
-
-
-
-function getThemeDay()
-{
-	let theme_day_old;
-	let td_inspect = ns_config.inspect('dayTheme');
-	if(td_inspect.globalValue)
-	{
-		return td_inspect.globalValue;
-	}
-	else if((theme_day_old = ns_config.get('dayTheme')) !== undefined)
-	{
-		ns_config.update('dayTheme', theme_day_old, true);
-		return theme_day_old;
-	}
-	else
-	{
-		return td_inspect.defaultValue;
-	}
-}
-
-function getThemeNight()
-{
-	let theme_night_old;
-	let tn_inspect = ns_config.inspect('nightTheme');
-	if(tn_inspect.globalValue)
-	{
-		return tn_inspect.globalValue;
-	}
-	else if((theme_night_old = ns_config.get('nightTheme')) !== undefined)
-	{
-		ns_config.update('nightTheme', theme_night_old, true);
-		return theme_night_old;
-	}
-	else
-	{
-		return tn_inspect.defaultValue;
-	}
 }
 
 function reloadWorkbenchConfig()
