@@ -74,12 +74,12 @@
 		"configuration": {
 			"title": "NightSwitch",
 			"properties": {
-				"nightswitch.dayTheme": {
+				"nightswitch.themeDay": {
 					"type": "string",
 					"default": "Default Light+",
 					"description": "Specifies which theme is to be shown during the day."
 				},
-				"nightswitch.nightTheme": {
+				"nightswitch.themeNight": {
 					"type": "string",
 					"default": "Default Dark+",
 					"description": "Specifies which theme is to be shown during the night."
@@ -90,12 +90,12 @@
 						"null"
 					],
 					"default": null,
-					"description": "(Priority 2) Specifies the user location in decimal degrees. Example input: \"(49.89,-97.14)\"."
+					"description": "Specifies the user location in decimal degrees. Example input: \"(49.89,-97.14)\". (Priority 2)"
 				},
 				"nightswitch.geolocation": {
 					"type": "boolean",
 					"default": false,
-					"description": "(Priority 3) Specifies whether to geolocate user. Please note that by setting this to true you give permission to infer your location with your IP address."
+					"description": "Enables geolocation. Please note that by setting this to true you give permission to infer your location with your IP address. (Priority 3)"
 				},
 				"nightswitch.sunrise": {
 					"type": [
@@ -103,7 +103,7 @@
 						"null"
 					],
 					"default": null,
-					"description": "(Priority 1) Manually set the time of sunrise. Accepts 24-Hour format \"HH:MM\""
+					"description": "Manually set the time of sunrise. Accepts 24-Hour format \"HH:MM\" (Priority 1)"
 				},
 				"nightswitch.sunset": {
 					"type": [
@@ -111,12 +111,12 @@
 						"null"
 					],
 					"default": null,
-					"description": "(Priority 1) Manually set the time of sunset. Accepts 24-Hour format \"HH:MM\", (eg. \"18:30\")"
+					"description": "Manually set the time of sunset. Accepts 24-Hour format \"HH:MM\" (Priority 1) "
 				},
 				"nightswitch.autoSwitch": {
 					"type": "boolean",
 					"default": true,
-					"description": "Automatically switch the theme to day or night (if VSCode has different theme in middle of day, automatically switches to dayTheme)"
+					"description": "Automatically switch the theme to day or night (if VSCode has different theme in middle of day, automatically switches to themeDay)"
 				},
 				"nightswitch.disableAutoSwitchNotifications": {
 					"type": "boolean",
@@ -127,22 +127,27 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "tsc -p ./",
+		"vscode:prepublish": "npm run esbuild-base -- --minify && cpy --flat node_modules/geoip-lite/data/ out/data",
 		"compile": "tsc -watch -p ./",
-		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "node ./node_modules/vscode/bin/test"
+		"test": "node ./node_modules/vscode/bin/test",
+		"esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/src/extension.js --external:vscode --external:electron --format=cjs --platform=node",
+		"esbuild": "npm run esbuild-base -- --sourcemap",
+		"esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+		"test-compile": "tsc -p ./"
 	},
 	"dependencies": {
+		"coordinate-parser": "1.0.2",
 		"geoip-lite": "^1.4.2",
 		"node-wifiscanner": "^0.2.1",
 		"public-ip": "^2.5.0",
-		"coordinate-parser": "1.0.2",
 		"suncalc": "^1.8.0"
 	},
 	"devDependencies": {
 		"@types/node": "^6.14.13",
-		"typescript": "^3.7.2",
-		"vscode": "^1.1.37"
+		"@types/vscode": "^1.16.0",
+		"cpy-cli": "^4.0.0",
+		"esbuild": "^0.14.25",
+		"typescript": "^3.7.2"
 	},
 	"__metadata": null,
 	"extensionKind": [

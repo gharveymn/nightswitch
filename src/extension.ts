@@ -41,12 +41,54 @@ export function activate(context: ExtensionContext)
 		}
 	});
 
+	migrateOldSettings();
+
 	// recheck every 5 minutes
 	setInterval(recheck, 1000 * 60 * 5);
 	recheck();
 
 }
 
+function migrateOldSettings()
+{
+	let dt_old = ns_config.inspect('dayTheme')
+	if(dt_old.workspaceFolderValue !== undefined)
+	{
+		ns_config.update('themeDay', dt_old.workspaceFolderValue, ConfigurationTarget.WorkspaceFolder)
+		ns_config.update('dayTheme', undefined, ConfigurationTarget.WorkspaceFolder)
+	}
+	
+	if(dt_old.workspaceValue !== undefined)
+	{
+		ns_config.update('themeDay', dt_old.workspaceValue, ConfigurationTarget.Workspace)
+		ns_config.update('dayTheme', undefined, ConfigurationTarget.Workspace)
+	}
+	
+	if (dt_old.globalValue !== undefined)
+	{
+		ns_config.update('themeDay', dt_old.globalValue, ConfigurationTarget.Global)
+		ns_config.update('dayTheme', undefined, ConfigurationTarget.Global)
+	}
+
+	let nt_old = ns_config.inspect('nightTheme')
+	if(nt_old.workspaceFolderValue !== undefined)
+	{
+		ns_config.update('themeNight', nt_old.workspaceFolderValue, ConfigurationTarget.WorkspaceFolder)
+		ns_config.update('nightTheme', undefined, ConfigurationTarget.WorkspaceFolder)
+	}
+	
+	if(nt_old.workspaceValue !== undefined)
+	{
+		ns_config.update('themeNight', nt_old.workspaceValue, ConfigurationTarget.Workspace)
+		ns_config.update('nightTheme', undefined, ConfigurationTarget.Workspace)
+	}
+	
+	if (nt_old.globalValue !== undefined)
+	{
+		ns_config.update('themeNight', nt_old.globalValue, ConfigurationTarget.Global)
+		ns_config.update('nightTheme', undefined, ConfigurationTarget.Global)
+	}
+}
 
 function parseManualTime(time: string): number
 {
@@ -307,7 +349,7 @@ function setTheme(section: string)
 	if(wb_config.get('colorTheme') !== theme_name)
 	{
 		let theme_config_info = ns_config.inspect(section);
-		let target;
+		let target : ConfigurationTarget;
 		if(theme_config_info.workspaceFolderValue !== undefined)
 		{
 			target = ConfigurationTarget.WorkspaceFolder;
