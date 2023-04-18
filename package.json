@@ -137,7 +137,7 @@
 	},
 	"dependencies": {
 		"coordinate-parser": "1.0.2",
-		"geoip-lite": "^1.4.2",
+		"geoip-lite": "^1.4.7",
 		"node-wifiscanner": "^0.2.1",
 		"public-ip": "^2.5.0",
 		"suncalc": "^1.8.0"
